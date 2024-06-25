@@ -1,9 +1,8 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import posterNotFound from "../../../public/notfound_portrait.jpg"
+import NotFoundPortrait from "../../../public/notfound_portrait.jpg";
 
 export default function MoviesList({
   initialMovies,
@@ -16,15 +15,36 @@ export default function MoviesList({
   const router = useRouter();
 
   const totalPages = Math.ceil(total / 20);
+  const pageGroup = Math.floor((page - 1) / 10);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     router.push(`/movies?page=${newPage}`);
   };
 
+  const renderPageButtons = () => {
+    const start = pageGroup * 10 + 1;
+    const end = Math.min(start + 9, totalPages);
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i).map(
+      (pageNum) => (
+        <button
+          key={pageNum}
+          onClick={() => handlePageChange(pageNum)}
+          className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
+            page === pageNum
+              ? "text-indigo-600 bg-indigo-50"
+              : "text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          {pageNum}
+        </button>
+      )
+    );
+  };
+
   return (
     <div>
-   
       <div className="container p-4">
         <div className="columns-3 m-8 gap-y-8">
           {movies.map((movie: any) => (
@@ -34,7 +54,7 @@ export default function MoviesList({
             >
               <div className="relative h-96">
                 <Image
-                  src={movie.poster || posterNotFound }
+                  src={movie.poster || NotFoundPortrait}
                   alt={movie.title}
                   layout="fill"
                   objectFit="cover"
@@ -63,34 +83,37 @@ export default function MoviesList({
           ))}
         </div>
       </div>
-
       <div className="mt-8 flex justify-center">
         <nav
           className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
           aria-label="Pagination"
         >
           <button
-            onClick={() => handlePageChange(page - 1)}
+            onClick={() => handlePageChange(Math.max(1, page - 1))}
             disabled={page === 1}
             className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
             Previous
           </button>
-          {[...Array(totalPages)].map((_, i) => (
+          {pageGroup > 0 && (
             <button
-              key={i}
-              onClick={() => handlePageChange(i + 1)}
-              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                page === i + 1
-                  ? "text-indigo-600 bg-indigo-50"
-                  : "text-gray-700 hover:bg-gray-50"
-              }`}
+              onClick={() => handlePageChange(pageGroup * 10)}
+              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              {i + 1}
+              ...
             </button>
-          ))}
+          )}
+          {renderPageButtons()}
+          {(pageGroup + 1) * 10 < totalPages && (
+            <button
+              onClick={() => handlePageChange((pageGroup + 1) * 10 + 1)}
+              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              ...
+            </button>
+          )}
           <button
-            onClick={() => handlePageChange(page + 1)}
+            onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
             className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
