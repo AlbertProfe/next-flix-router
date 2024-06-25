@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import posterNotFound from "../../../public/notfound_portrait.jpg"
 
 export default function MoviesList({
   initialMovies,
@@ -23,17 +24,17 @@ export default function MoviesList({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4">Movies</h1>
+   
       <div className="container p-4">
-        <div className="columns-3 gap-6 p-8">
+        <div className="columns-3 m-8 gap-y-8">
           {movies.map((movie: any) => (
             <div
               key={movie._id}
-              className="bg-white shadow-lg rounded-xl overflow-hidden"
+              className="bg-white shadow-lg rounded-xl overflow-hidden mb-8"
             >
               <div className="relative h-96">
                 <Image
-                  src={movie.poster || "https://via.placeholder.com/300x450"}
+                  src={movie.poster || posterNotFound }
                   alt={movie.title}
                   layout="fill"
                   objectFit="cover"

@@ -11,10 +11,13 @@ export default async function Movies({
   const { movies, total } = await getMovies(page);
 
   return (
+     <div>
+      <h1 className="text-3xl font-bold mb-4">Movies</h1>
     <MoviesList
       initialMovies={movies}
       initialTotal={total}
       initialPage={page}
     />
+    </div>
   );
 }
