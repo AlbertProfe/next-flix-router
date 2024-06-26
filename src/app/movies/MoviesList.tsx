@@ -5,6 +5,7 @@ import Image from "next/image";
 import NotFoundPortrait from "../../../public/notfound_portrait.jpg";
 import { getMovies } from "../actions/actions";
 import { Movie } from "../../types/Movie";
+import Link from "next/link";
 
 interface MoviesListProps {
   initialMovies: Movie[];
@@ -72,33 +73,35 @@ export default function MoviesList({
               key={movie._id}
               className="bg-white shadow-lg rounded-xl overflow-hidden mb-8"
             >
-              <div className="relative h-96">
-                <Image
-                  src={movie.poster || NotFoundPortrait}
-                  alt={movie.title}
-                  layout="fill"
-                  objectFit="cover"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                  <h2 className="text-xl font-bold text-white truncate">
-                    {movie.title}
-                  </h2>
-                  <p className="text-sm text-gray-300">{movie.year}</p>
+              <Link href={`/movies/${movie._id}`}>
+                <div className="relative h-96">
+                  <Image
+                    src={movie.poster || NotFoundPortrait}
+                    alt={movie.title}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                    <h2 className="text-xl font-bold text-white truncate">
+                      {movie.title}
+                    </h2>
+                    <p className="text-sm text-gray-300">{movie.year}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="p-4">
-                <p className="text-sm text-gray-600 mb-2 truncate">
-                  {movie.plot || "No plot available"}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-semibold text-indigo-600">
-                    {movie.rated || "Not rated"}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {movie.runtime || "Unknown"} min
-                  </span>
+                <div className="p-4">
+                  <p className="text-sm text-gray-600 mb-2 truncate">
+                    {movie.plot || "No plot available"}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-semibold text-indigo-600">
+                      {movie.rated || "Not rated"}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {movie.runtime || "Unknown"} min
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
