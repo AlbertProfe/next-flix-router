@@ -18,6 +18,7 @@ export default function MoviesList({
   initialTotal,
   initialPage,
 }: MoviesListProps) {
+  
   const [movies, setMovies] = useState<Movie[]>(initialMovies);
   const [total, setTotal] = useState(initialTotal);
   const [page, setPage] = useState(initialPage);

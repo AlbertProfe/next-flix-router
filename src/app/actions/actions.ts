@@ -36,12 +36,27 @@ export async function addMovie(movieData: any) {
   return result;
 }
 
-export async function getMovie(id: string) {
-  const client = await clientPromise;
-  const db = client.db('sample_mflix');
-  
-  const movie = await db.collection('movies').findOne({ _id: new ObjectId(id) });
-  return movie;
+export async function getMovie(id: string): Promise<Movie | null> {
+  try {
+    const client = await clientPromise;
+    const db = client.db('sample_mflix'); // Make sure this is your correct database name
+    const movie = await db.collection('movies').findOne({ _id: new ObjectId(id) });
+
+    if (!movie) return null;
+    console.log("movie:", movie)
+    return {
+      _id: movie._id.toString(),
+      title: movie.title,
+      year: movie.year,
+      poster: movie.poster,
+      plot: movie.plot,
+      rated: movie.rated,
+      runtime: movie.runtime
+    } as Movie;
+  } catch (error) {
+    console.error('Error fetching movie:', error);
+    return null;
+  }
 }
 
 export async function getMovieByTitle(title: string): Promise<Movie[]> {
