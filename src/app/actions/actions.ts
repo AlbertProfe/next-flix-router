@@ -43,3 +43,23 @@ export async function getMovie(id: string) {
   const movie = await db.collection('movies').findOne({ _id: new ObjectId(id) });
   return movie;
 }
+
+export async function getMovieByTitle(title: string): Promise<Movie[]> {
+  const client = await clientPromise;
+  const db = client.db('sample_mflix');
+  
+  const movies = await db.collection('movies')
+    .find({ title: { $regex: title, $options: 'i' } })
+    .project({
+      title: 1,
+      year: 1,
+      poster: 1,
+      plot: 1,
+      rated: 1,
+      runtime: 1
+    })
+    .limit(10)
+    .toArray() as Movie[];
+
+  return movies;
+}
