@@ -37,6 +37,11 @@ export default function RootLayout({
                   Add Movie
                 </Link>
               </li>
+              <li className="mb-2">
+                <Link href="/search-movie" className="hover:text-gray-300">
+                  Search Movie
+                </Link>
+              </li>
             </ul>
           </nav>
           <main className="flex-1 p-8">{children}</main>

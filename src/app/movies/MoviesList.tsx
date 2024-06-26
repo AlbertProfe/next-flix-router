@@ -83,6 +83,7 @@ export default function MoviesList({
           ))}
         </div>
       </div>
+      
       <div className="mt-8 flex justify-center">
         <nav
           className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"

@@ -3,7 +3,7 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
-export async function getMovies(page = 1, limit = 20) {
+export async function getMovies(page: number, limit = 20) {
   const client = await clientPromise;
   const db = client.db('sample_mflix');
   
