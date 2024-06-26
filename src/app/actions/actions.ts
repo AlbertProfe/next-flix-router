@@ -2,8 +2,9 @@
 
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { Movie } from '../../types/Movie';
 
-export async function getMovies(page: number, limit = 20) {
+export async function getMovies(page: number, limit = 20): Promise<{ movies: Movie[], total: number }> {
   const client = await clientPromise;
   const db = client.db('sample_mflix');
   
@@ -20,7 +21,7 @@ export async function getMovies(page: number, limit = 20) {
     })
     .skip(skip)
     .limit(limit)
-    .toArray();
+    .toArray() as Movie[];
 
   const total = await db.collection('movies').countDocuments();
 

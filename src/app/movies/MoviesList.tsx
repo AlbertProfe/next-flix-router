@@ -3,13 +3,21 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import NotFoundPortrait from "../../../public/notfound_portrait.jpg";
+import { getMovies } from "../actions/actions";
+import { Movie } from "../../types/Movie";
+
+interface MoviesListProps {
+  initialMovies: Movie[];
+  initialTotal: number;
+  initialPage: number;
+}
 
 export default function MoviesList({
   initialMovies,
   initialTotal,
   initialPage,
-}) {
-  const [movies, setMovies] = useState(initialMovies);
+}: MoviesListProps) {
+  const [movies, setMovies] = useState<Movie[]>(initialMovies);
   const [total, setTotal] = useState(initialTotal);
   const [page, setPage] = useState(initialPage);
   const router = useRouter();
@@ -17,9 +25,21 @@ export default function MoviesList({
   const totalPages = Math.ceil(total / 20);
   const pageGroup = Math.floor((page - 1) / 10);
 
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const { movies: newMovies, total: newTotal } = await getMovies(page);
+      setMovies(newMovies);
+      setTotal(newTotal);
+    };
+
+    if (page !== initialPage) {
+      fetchMovies();
+    }
+  }, [page, initialPage]);
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    router.push(`/movies?page=${newPage}`);
+    router.push(`/movies?page=${newPage}`, { scroll: false });
   };
 
   const renderPageButtons = () => {
@@ -83,7 +103,7 @@ export default function MoviesList({
           ))}
         </div>
       </div>
-      
+
       <div className="mt-8 flex justify-center">
         <nav
           className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
