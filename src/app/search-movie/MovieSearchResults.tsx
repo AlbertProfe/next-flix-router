@@ -1,5 +1,5 @@
-// components/MovieSearchResults.tsx
 import React from "react";
+import Link from "next/link";
 import { Movie } from "../../types/Movie";
 
 interface MovieSearchResultsProps {
@@ -24,7 +24,14 @@ const MovieSearchResults: React.FC<MovieSearchResultsProps> = ({ movies }) => {
       <tbody>
         {movies.map((movie) => (
           <tr key={movie._id}>
-            <td className="px-4 py-2 border-b">{movie.title}</td>
+            <td className="px-4 py-2 border-b">
+              <Link
+                href={`/movies/${movie._id}`}
+                className="text-blue-600 hover:underline"
+              >
+                {movie.title}
+              </Link>
+            </td>
             <td className="px-4 py-2 border-b">{movie.year}</td>
             <td className="px-4 py-2 border-b">{movie.rated}</td>
             <td className="px-4 py-2 border-b">{movie.runtime}</td>
