@@ -44,6 +44,7 @@ export async function getMovie(id: string): Promise<Movie | null> {
 
     if (!movie) return null;
     console.log("movie:", movie)
+    
     return {
       _id: movie._id.toString(),
       title: movie.title,

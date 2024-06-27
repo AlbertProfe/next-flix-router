@@ -1,45 +1,12 @@
-// components/MovieDetail.tsx
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { getMovie } from "../actions/actions";
-import { Movie } from "../../types/Movie";
-import NotFoundPortrait from "../../../public/notfound_portrait.jpg";
+import { Movie } from "@/types/Movie";
+import NotFoundPortrait from "../../../../public/notfound_portrait.jpg";
 
 interface MovieDetailProps {
-  movieId: string;
+  movie: Movie;
 }
 
-export default function MovieDetail({ movieId }: MovieDetailProps) {
-  const [movie, setMovie] = useState<Movie | null>(null);
-  const [loading, setLoading] = useState(true);
-
-useEffect(() => {
-  const fetchMovie = async () => {
-    try {
-      console.log("Fetching movie with ID:", movieId);
-      const fetchedMovie = await getMovie(movieId);
-      console.log("Fetched movie:", fetchedMovie);
-      setMovie(fetchedMovie);
-    } catch (error) {
-      console.error("Error fetching movie:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchMovie();
-}, [movieId]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!movie) {
-    return <div>Movie not found</div>;
-  }
-
+export default function MovieDetail({ movie }: MovieDetailProps) {
   return (
     <div className="container mx-auto p-4">
       <div className="bg-white shadow-lg rounded-xl overflow-hidden">
