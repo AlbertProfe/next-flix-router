@@ -1,8 +1,9 @@
 
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import MovieDetail from "./MovieDetail";
-import { getMovie } from "../../actions/actions";
+import { getMovie, deleteMovieById } from "../../actions/actions";
+import { redirect } from "next/navigation";
+
+
 
 export default async function MovieDetailPage({
   params,
@@ -15,5 +16,16 @@ export default async function MovieDetailPage({
     return <div>Movie not found</div>;
   }
 
-  return <MovieDetail movie={movie} />;
+  async function handleDelete() {
+    "use server";
+    const success = await deleteMovieById(params.id);
+    if (success) {
+      redirect("/movies");
+    } else {
+      console.error("Failed to delete movie");
+      // You might want to handle this error case differently
+    }
+  }
+
+  return <MovieDetail movie={movie} onDelete={handleDelete} />;
 }

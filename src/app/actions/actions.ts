@@ -79,3 +79,20 @@ export async function getMovieByTitle(title: string): Promise<Movie[]> {
 
   return movies;
 }
+
+export async function deleteMovieById(id: string): Promise<boolean> {
+  try {
+    const client = await clientPromise;
+    const db = client.db('sample_mflix'); // Ensure this is your correct database name
+    const result = await db.collection('movies').deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 1) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error deleting movie:', error);
+    return false;
+  }
+}
