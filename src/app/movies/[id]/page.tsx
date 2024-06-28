@@ -1,8 +1,12 @@
 
 import MovieDetail from "./MovieDetail";
-import { getMovie, deleteMovieById } from "../../actions/actions";
+import {
+  getMovie,
+  deleteMovieById,
+  updateMovieById,
+} from "../../actions/actions";
 import { redirect } from "next/navigation";
-
+import { Movie } from "@/types/Movie";
 
 
 export default async function MovieDetailPage({
@@ -27,5 +31,21 @@ export default async function MovieDetailPage({
     }
   }
 
-  return <MovieDetail movie={movie} onDelete={handleDelete} />;
+   async function handleUpdate(updateData: Partial<Movie>) {
+     "use server";
+     const success = await updateMovieById(params.id, updateData);
+     if (success) {
+       // Refresh the page to show updated data
+       redirect(`/movies/${params.id}`);
+     }
+     return success;
+   }
+
+  return (
+    <MovieDetail
+      movie={movie}
+      onDelete={handleDelete}
+      onUpdate={handleUpdate}
+    />
+  );
 }

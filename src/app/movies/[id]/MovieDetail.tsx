@@ -4,14 +4,17 @@ import Image from "next/image";
 import { Movie } from "@/types/Movie";
 import NotFoundPortrait from "../../../../public/notfound_portrait.jpg";
 import { useState } from "react";
+import UpdateMovie from "./UpdateMovie";
 
 interface MovieDetailProps {
   movie: Movie;
   onDelete: () => Promise<void>;
+  onUpdate: (updateData: Partial<Movie>) => Promise<boolean>;
 }
 
-export default function MovieDetail({ movie, onDelete }: MovieDetailProps) {
+export default function MovieDetail({ movie, onDelete, onUpdate }: MovieDetailProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this movie?")) {
@@ -26,6 +29,20 @@ export default function MovieDetail({ movie, onDelete }: MovieDetailProps) {
       }
     }
   };
+
+  const handleUpdate = () => {
+    setIsUpdating(true);
+  };
+
+  if (isUpdating) {
+    return (
+      <UpdateMovie
+        movie={movie}
+        onUpdate={onUpdate}
+        onCancel={() => setIsUpdating(false)}
+      />
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -56,6 +73,13 @@ export default function MovieDetail({ movie, onDelete }: MovieDetailProps) {
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:bg-red-300"
             >
               {isDeleting ? "Deleting..." : "Delete Movie"}
+            </button>
+            {" "}
+            <button
+              onClick={handleUpdate}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Update Movie
             </button>
           </div>
         </div>

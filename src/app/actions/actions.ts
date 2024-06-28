@@ -96,3 +96,19 @@ export async function deleteMovieById(id: string): Promise<boolean> {
     return false;
   }
 }
+
+export async function updateMovieById(id: string, updateData: Partial<Movie>): Promise<boolean> {
+  try {
+    const client = await clientPromise;
+    const db = client.db('sample_mflix'); // Ensure this is your correct database name
+    const result = await db.collection('movies').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    return result.modifiedCount === 1;
+  } catch (error) {
+    console.error('Error updating movie:', error);
+    return false;
+  }
+}
