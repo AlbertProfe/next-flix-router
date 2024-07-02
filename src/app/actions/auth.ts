@@ -4,10 +4,10 @@ import clientPromise from '@/lib/mongodb';
 import { sign, verify } from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { User } from '@/types/User';
+import { SignJWT } from 'jose';
 
 
-
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export async function signup(email: string, password: string) {
   const client = await clientPromise;
@@ -26,6 +26,8 @@ export async function signup(email: string, password: string) {
 }
 
 export async function login(email: string, password: string) {
+
+  try {
   const client = await clientPromise;
   const db = client.db('sample_mflix');
   
@@ -33,11 +35,25 @@ export async function login(email: string, password: string) {
   if (!user) {
     throw new Error('Invalid credentials');
   }
+  
+ const token = await new SignJWT({ userId: 'user._id.toString()' }) // Replace with actual user ID
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('1h')
+      .sign(JWT_SECRET);
 
-  const token = sign({ userId: user._id.toString() }, JWT_SECRET, { expiresIn: '1h' });
+    cookies().set('token', token, { 
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 3600 // 1 hour
+    });
 
-  cookies().set('token', token, { httpOnly: true });
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error('Login error:', error);
+    return { success: false, error: 'Login failed' };
+  }
+
 }
 
 export async function logout() {
@@ -59,3 +75,4 @@ export async function getUser(): Promise<User | null> {
     return null;
   }
 }
+

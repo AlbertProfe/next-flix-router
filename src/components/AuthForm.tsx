@@ -13,26 +13,38 @@ export default function AuthForm({ initialMode = "login" }: AuthFormProps) {
   const [isLogin, setIsLogin] = useState(initialMode === "login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+     setError("");
     try {
       if (isLogin) {
-        await login(email, password);
-        alert("login successful")
+        const result = await login(email, password);
+        if ( result.success) {
+          alert("login successful");
+          router.push("/movies");
+          router.refresh(); // Force a refresh to update the UI
+        } else {
+          setError(result?.error || "Login failed");
+        }
+        
       } else {
-        await signup(email, password);
-         alert("sign up successful");
+        const result = await signup(email, password);
+        if (result.success) {
+          alert("sign up successful");
+          router.push("/login");
+        }
+       
       }
       sessionStorage.setItem("isAuthenticated", "true");
       router.push("/movies");
       console.log("isAuthenticated", sessionStorage.getItem("isAuthenticated"));
       console.log("isLogin", isLogin);
     } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : "An error occurred");
+     console.error("Authentication error:", error);
+     setError("An unexpected error occurred");
     }
   };
 

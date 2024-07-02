@@ -1,31 +1,29 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verify } from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  const path = request.nextUrl.pathname;
+  // Allow access to home and auth routes
+  if (pathname === '/' || pathname.startsWith('/auth')) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get('token')?.value;
 
-   if (path.startsWith('/api/auth') || path === '/auth') {
-    return NextResponse.next();
-  }
-
-  if (request.nextUrl.pathname === '/') {
-    return NextResponse.next();
-  }
-
   if (!token) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/auth', request.url));
   }
 
   try {
-    verify(token, JWT_SECRET);
+    await jwtVerify(token, JWT_SECRET);
     return NextResponse.next();
   } catch (error) {
-    return NextResponse.redirect(new URL('/', request.url));
+    console.error('Token verification failed:', error);
+    return NextResponse.redirect(new URL('/auth', request.url));
   }
 }
 

@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import LogoutButton from "@/components/LogoutButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +17,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -42,16 +47,17 @@ export default function RootLayout({
                   Search Movie
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link href="/auth?mode=login" className="hover:text-gray-300">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link href="/auth?mode=signup" className="hover:text-gray-300">
-                  Sign Up
-                </Link>
-              </li>
+              {!token ? (
+                <li className="mb-2">
+                  <Link href="/auth" className="hover:text-gray-300">
+                    Login / Sign Up
+                  </Link>
+                </li>
+              ) : (
+                <li className="mb-2">
+                  <LogoutButton />
+                </li>
+              )}
             </ul>
           </nav>
           <main className="flex-1 p-8">{children}</main>
