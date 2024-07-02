@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
-
-// next.config.js
-// next.config.mjs
-export default {
+const nextConfig = {
   images: {
-    domains: ['m.media-amazon.com', 'via.placeholder.com'],
+    domains: ["m.media-amazon.com", "via.placeholder.com"],
+  },
+  experimental: {
+    serverComponentsExternalPackages: ["jsonwebtoken"],
   },
 };
+
+export default nextConfig;

@@ -42,6 +42,16 @@ export default function RootLayout({
                   Search Movie
                 </Link>
               </li>
+              <li className="mb-2">
+                <Link href="/auth?mode=login" className="hover:text-gray-300">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link href="/auth?mode=signup" className="hover:text-gray-300">
+                  Sign Up
+                </Link>
+              </li>
             </ul>
           </nav>
           <main className="flex-1 p-8">{children}</main>
