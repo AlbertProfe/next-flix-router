@@ -23,11 +23,18 @@ export default function AuthForm({ initialMode = "login" }: AuthFormProps) {
       if (isLogin) {
         const result = await login(email, password);
         if ( result.success) {
+           sessionStorage.setItem("isAuthenticated", "true");
+            console.log(
+              "isAuthenticated",
+              sessionStorage.getItem("isAuthenticated")
+            );
+            console.log("isLogin", isLogin);
           alert("login successful");
           router.push("/movies");
           router.refresh(); // Force a refresh to update the UI
         } else {
           setError(result?.error || "Login failed");
+          console.log(error);
         }
         
       } else {
@@ -38,12 +45,12 @@ export default function AuthForm({ initialMode = "login" }: AuthFormProps) {
         }
        
       }
-      sessionStorage.setItem("isAuthenticated", "true");
-      router.push("/movies");
-      console.log("isAuthenticated", sessionStorage.getItem("isAuthenticated"));
-      console.log("isLogin", isLogin);
+     
+     
+     
     } catch (error) {
      console.error("Authentication error:", error);
+     alert(error instanceof Error ? error.message : "An error occurred");
      setError("An unexpected error occurred");
     }
   };
@@ -57,6 +64,7 @@ export default function AuthForm({ initialMode = "login" }: AuthFormProps) {
         placeholder="Email"
         required
       />
+      <br />
       <input
         type="password"
         value={password}

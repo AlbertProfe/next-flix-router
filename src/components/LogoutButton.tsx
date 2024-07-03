@@ -8,6 +8,9 @@ export default function LogoutButton() {
 
   const handleLogout = async () => {
     await logout();
+
+    sessionStorage.setItem("isAuthenticated", "false");
+    console.log("isAuthenticated", sessionStorage.getItem("isAuthenticated"));
     router.push("/");
     router.refresh();
   };

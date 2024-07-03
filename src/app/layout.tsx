@@ -8,7 +8,7 @@ import LogoutButton from "@/components/LogoutButton";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MFlix",
+  title: "MFlix next-flix-router",
   description: "Movie database app",
 };
 

@@ -27,7 +27,7 @@ export async function signup(email: string, password: string) {
 
 export async function login(email: string, password: string) {
 
-  try {
+ 
   const client = await clientPromise;
   const db = client.db('sample_mflix');
   
@@ -49,15 +49,14 @@ export async function login(email: string, password: string) {
     });
 
     return { success: true };
-  } catch (error) {
-    console.error('Login error:', error);
-    return { success: false, error: 'Login failed' };
-  }
 
 }
 
 export async function logout() {
   cookies().delete('token');
+  cookies().delete('JSESSIONID');
+  
+  
   return { success: true };
 }
 
