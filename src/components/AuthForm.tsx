@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signup, login } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
-
 
 type AuthFormProps = {
   initialMode?: "login" | "signup";
@@ -14,44 +13,40 @@ export default function AuthForm({ initialMode = "login" }: AuthFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/movies");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-     setError("");
+    setError("");
     try {
       if (isLogin) {
         const result = await login(email, password);
-        if ( result.success) {
-           sessionStorage.setItem("isAuthenticated", "true");
-            console.log(
-              "isAuthenticated",
-              sessionStorage.getItem("isAuthenticated")
-            );
-            console.log("isLogin", isLogin);
-          alert("login successful");
-          router.push("/movies");
-          router.refresh(); // Force a refresh to update the UI
+        if (result.success) {
+          sessionStorage.setItem("isAuthenticated", "true");
+          setIsAuthenticated(true);
+          alert("Login successful");
         } else {
           setError(result?.error || "Login failed");
           console.log(error);
         }
-        
       } else {
         const result = await signup(email, password);
         if (result.success) {
-          alert("sign up successful");
-          router.push("/login");
+          alert("Sign up successful");
+          setIsLogin(true); // Switch to login mode after successful signup
         }
-       
       }
-     
-     
-     
     } catch (error) {
-     console.error("Authentication error:", error);
-     alert(error instanceof Error ? error.message : "An error occurred");
-     setError("An unexpected error occurred");
+      console.error("Authentication error:", error);
+      alert(error instanceof Error ? error.message : "An error occurred");
+      setError("An unexpected error occurred");
     }
   };
 

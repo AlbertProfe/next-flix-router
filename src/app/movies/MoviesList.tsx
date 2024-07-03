@@ -18,7 +18,6 @@ export default function MoviesList({
   initialTotal,
   initialPage,
 }: MoviesListProps) {
-  
   const [movies, setMovies] = useState<Movie[]>(initialMovies);
   const [total, setTotal] = useState(initialTotal);
   const [page, setPage] = useState(initialPage);
@@ -66,51 +65,51 @@ export default function MoviesList({
   };
 
   return (
-    <div>
-      <div className="container p-4">
-        <div className="columns-3 m-8 gap-y-8">
-          {movies.map((movie: any) => (
-            <div
-              key={movie._id}
-              className="bg-white shadow-lg rounded-xl overflow-hidden mb-8"
-            >
-              <Link href={`/movies/${movie._id}`}>
-                <div className="relative h-96">
-                  <Image
-                    src={movie.poster || NotFoundPortrait}
-                    alt={movie.title}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                    <h2 className="text-xl font-bold text-white truncate">
-                      {movie.title}
-                    </h2>
-                    <p className="text-sm text-gray-300">{movie.year}</p>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <p className="text-sm text-gray-600 mb-2 truncate">
-                    {movie.plot || "No plot available"}
+    <div className="container mx-auto px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {movies.map((movie: any) => (
+          <div
+            key={movie._id}
+            className="bg-white shadow-lg rounded-xl overflow-hidden"
+          >
+            <Link href={`/movies/${movie._id}`}>
+              <div className="relative h-64 sm:h-72 md:h-80">
+                <Image
+                  src={movie.poster || NotFoundPortrait}
+                  alt={movie.title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                  <h2 className="text-lg sm:text-xl font-bold text-white truncate">
+                    {movie.title}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-gray-300">
+                    {movie.year}
                   </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-semibold text-indigo-600">
-                      {movie.rated || "Not rated"}
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      {movie.runtime || "Unknown"} min
-                    </span>
-                  </div>
                 </div>
-              </Link>
-            </div>
-          ))}
-        </div>
+              </div>
+              <div className="p-4">
+                <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2">
+                  {movie.plot || "No plot available"}
+                </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs sm:text-sm font-semibold text-indigo-600">
+                    {movie.rated || "Not rated"}
+                  </span>
+                  <span className="text-xs sm:text-sm text-gray-500">
+                    {movie.runtime || "Unknown"} min
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        ))}
       </div>
 
       <div className="mt-8 flex justify-center">
         <nav
-          className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+          className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px overflow-x-auto max-w-full"
           aria-label="Pagination"
         >
           <button
@@ -118,12 +117,12 @@ export default function MoviesList({
             disabled={page === 1}
             className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
-            Previous
+            Prev
           </button>
           {pageGroup > 0 && (
             <button
               onClick={() => handlePageChange(pageGroup * 10)}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               ...
             </button>
@@ -132,7 +131,7 @@ export default function MoviesList({
           {(pageGroup + 1) * 10 < totalPages && (
             <button
               onClick={() => handlePageChange((pageGroup + 1) * 10 + 1)}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               ...
             </button>
