@@ -21,11 +21,11 @@ export default function AuthPage() {
       password,
       isLogin: isLogin,
     });
-
+     console.log("result", result);
     if (result?.error) {
       setError(result.error);
     } else if (result?.ok) {
-      console.log("result", result);
+     
       router.push("/movies");
     }
   };
