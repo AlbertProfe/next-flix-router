@@ -10,44 +10,67 @@ export const authOptions: AuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        isLogin: { label: "Is Login", type: "boolean" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error("Missing email or password");
         }
-        
+
         const client = await clientPromise;
         const db = client.db('sample_mflix');
-        const user = await db.collection("users").findOne({ email: credentials.email });
-        
-        if (!user) {
-          return null;
+        const usersCollection = db.collection("users");
+
+        const user = await usersCollection.findOne({ email: credentials.email });
+
+        if (credentials.isLogin === "true") {
+          // Login
+          if (!user || user.password !== credentials.password) {
+            throw new Error("Invalid email or password");
+          }
+        } else {
+          // Sign up
+          if (user) {
+            throw new Error("User already exists");
+          }
+
+          const newUser = await usersCollection.insertOne({
+            email: credentials.email,
+            password: credentials.password, // Note: In a real app, hash this password
+          });
+
+          if (!newUser.insertedId) {
+            throw new Error("Failed to create user");
+          }
         }
-        
-        // Compare plain text passwords
-        const isPasswordValid = credentials.password === user.password;
-        
-        if (!isPasswordValid) {
-          return null;
-        }
-        
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name
-        };
+
+        return { id: user?._id.toString() || "new_user", email: credentials.email };
       }
     })
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+      return session;
+    }
+  },
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
   pages: {
     signIn: "/auth"
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

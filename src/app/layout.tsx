@@ -1,10 +1,12 @@
-import { getServerSession } from "next-auth/next";
+//import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import "./globals.css";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import SidebarToggle from "@/components/SidebarToggle";
+import LogoutButton from "@/components/LogoutButton";
+import { cookies } from "next/headers";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,7 +22,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
  
-const session = await getServerSession(authOptions);
+ const cookieStore = cookies();
+ const token = cookieStore.get("next-auth.session-token");
+ console.log("token", token);
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -51,14 +56,19 @@ const session = await getServerSession(authOptions);
                   Search Movie
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link href="/auth" className="hover:text-gray-300">
-                  Login / Sign up
-                </Link>
-              </li>
             </ul>
           </div>
+          <div className="p-4 border-t border-gray-700">
+            {!token ? (
+              <Link href="/auth" className="hover:text-gray-300 block">
+                Login / Sign Up
+              </Link>
+            ) : (
+              <LogoutButton />
+            )}
+          </div>
         </nav>
+
         <SidebarToggle />
 
         <main className="md:ml-72 lg:ml-80 p-8">{children}</main>

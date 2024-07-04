@@ -18,7 +18,7 @@ export default function AddMovie() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Add Movie</h1>
       <form onSubmit={handleSubmit} className="max-w-md">
         <div className="mb-4">
