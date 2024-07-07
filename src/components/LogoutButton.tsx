@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut } from "../app/auth/helpers";
 
 export default function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
+    await signOut();
     console.log("Logged out");
     router.push("/");
     router.refresh();

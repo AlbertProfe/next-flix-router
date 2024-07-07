@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
 import { useState } from "react";
-import  signIn from "@/auth";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
@@ -14,23 +14,18 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-        isLogin: isLogin.toString(),
-      });
-      
-      if (result?.error) {
-        setError(result.error);
-        
-      } else {
-        router.push("/movies");
-      }
-    } catch (error) {
-      setError("An error occurred during the authentication");
-      
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+      isLogin: isLogin,
+    });
+
+    if (result?.error) {
+      setError(result.error);
+    } else if (result?.ok) {
+      router.push("/movies");
     }
   };
 
@@ -59,14 +54,14 @@ export default function AuthPage() {
           />
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            className="w-full bg-gray-800 text-white p-2 rounded hover:bg-gray-600"
           >
             {isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
         <button
           onClick={() => setIsLogin(!isLogin)}
-          className="w-full mt-4 text-blue-500 hover:underline"
+          className="w-full mt-4 text-gray-500 hover:underline"
         >
           {isLogin ? "Switch to Sign Up" : "Switch to Login"}
         </button>
