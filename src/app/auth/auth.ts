@@ -1,9 +1,13 @@
 import NextAuth, { User, NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/lib/mongodb";
+
 
 export const BASE_PATH = "/api/auth";
 
 const authOptions: NextAuthConfig = {
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     Credentials({
       name: "Credentials",
@@ -12,30 +16,30 @@ const authOptions: NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials): Promise<User | null> {
-        const users = [
-          {
-            id: "001",
-            userName: "albertprofe",
-            name: "Albert",
-            password: "1234",
-            email: "albertprofe@gmail.com",
-          },
-          {
-            id: "002",
-            userName: "jaime",
-            name: "Jaime",
-            password: "1234",
-            email: "jaime@gmail.com",
-          },
-        ];
-        const user = users.find(
-          (user) =>
-            user.email === credentials.email &&
-            user.password === credentials.password
-        );
+        console.log("credentials", credentials);
+      
+       if (!credentials?.email || !credentials?.password) {
+          throw new Error("Missing email or password");
+        }
+
+        const client = await clientPromise;
+        const db = client.db('sample_mflix');
+        const usersCollection = db.collection("users");
+
+        const user = await usersCollection.findOne({ email: credentials.email });
+
+       
+        if (!user || user.password !== credentials.password) {
+            throw new Error("Invalid email or password");
+          }
+      
+          
+        console.log("user", user);
+
         return user
-          ? { id: user.id, name: user.name, email: user.email }
+          ? {email: user.email }
           : null;
+
       },
     }),
   ],

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,6 +11,9 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  
+   const { data: session } = useSession();
+  console.log("session", session);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +29,7 @@ export default function AuthPage() {
     if (result?.error) {
       setError(result.error);
     } else if (result?.ok) {
+      console.log("result",result );
       router.push("/movies");
     }
   };

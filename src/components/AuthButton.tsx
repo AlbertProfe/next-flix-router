@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-import { signIn, signOut } from "../app/auth/helpers";
+import { signIn } from "../app/auth/helpers";
 
 const AuthButton = () => {
   const { data: session } = useSession();
