@@ -1,5 +1,4 @@
 
-
 import Link from "next/link";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -20,6 +19,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
       <body className={inter.className}>

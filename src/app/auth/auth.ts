@@ -2,6 +2,7 @@ import NextAuth, { User, NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
+import { getCsrfToken } from "next-auth/react";
 
 
 export const BASE_PATH = "/api/auth";
@@ -45,6 +46,21 @@ const authOptions: NextAuthConfig = {
   ],
   basePath: BASE_PATH,
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+     async jwt({ token }) {
+      return token;
+    },
+    async session({ session, token }) {
+     session.sessionToken = token;
+      return session;
+    }
+  },
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/auth", signOut: "/auth"
+  },
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);

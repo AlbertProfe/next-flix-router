@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function AuthPage() {
     e.preventDefault();
     setError("");
 
+ 
     const result = await signIn("credentials", {
       redirect: false,
       email,
